@@ -1,0 +1,15 @@
+.main_input{
+    width: 75vw;
+}
+
+@media (min-width: 768px) and ( max-width: 1400px){
+    .main_input{
+        width: 40vw;
+    }
+}
+
+@media (min-width: 1400px){
+    .main_input{
+        width: 25vw;
+    }
+}

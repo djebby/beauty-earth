@@ -7,6 +7,7 @@ import Login from "./users/pages/Login.js";
 import UserPictures from "./pictures/pages/UserPictures.js";
 import NewPicture from "./pictures/pages/NewPicture.js";
 import UpdatePictures from "./pictures/pages/UpdatePictures.js";
+import SignUp from "./users/pages/SignUp.js";
 
 function App() {
 
@@ -17,6 +18,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Pictures />}/>
         <Route path="/login" element={<Login />}/>
+        <Route path="/signup" element={<SignUp />}/>
         <Route path="/:userId/pictures" element={<UserPictures />}/>
         <Route path="/pictures/new" element={<NewPicture />}/>
         <Route path="/pictures/:picId" element={<UpdatePictures />} />

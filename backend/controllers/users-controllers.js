@@ -2,7 +2,8 @@ const User = require("../models/user-model.js");
 
 // POST /api/users/signup
 const signup = async (req, res, next) => {
-  console.log("signup run...");
+  console.log("signup run... ",req.body);
+  
   const { name, email, password, image_url } = req.body;
 
   const newUser = new User({
@@ -16,14 +17,13 @@ const signup = async (req, res, next) => {
   try {
     await newUser.save();
     res.status(201).json({
-      message: "POST => http//localhost:4000/api/users/signup",
+      message: "user added successfully",
       userId: newUser.id,
       name,
-      email,
-      password,
+      email
     });
   } catch (error) {
-    res.status(404).json({ message: "error" });
+    res.status(404).json({ error: error.message });
   }
 };
 

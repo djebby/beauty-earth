@@ -17,7 +17,6 @@ const MainNavigation = (props) => {
   const closeDrawerHandler = () => {
       setDrawerOpeningState(false);
   }
-  console.log(drawerOpeningState);
   return (
     <>
         {drawerOpeningState && <Backdrop onClick={closeDrawerHandler}/>}

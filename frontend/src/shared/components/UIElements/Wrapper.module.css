@@ -1,0 +1,16 @@
+.wrapper {
+    margin:auto;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    width: max-content;
+    color: white;
+    background-color: #282c34;
+    border-radius: 1rem;
+}
+
+
+@media (min-width: 768px) {
+}
