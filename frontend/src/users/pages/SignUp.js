@@ -12,21 +12,19 @@ const SignUp = () => {
 
   const onSubmitHandler = async () =>{
     try {
+      const formData = new FormData();
+      formData.append("name", refName.current.value);
+      formData.append("email", refEmail.current.value);
+      formData.append("password", refPassword.current.value);
+      formData.append("image", refImage.current.files[0]);
       const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}users/signup`,{
         method: "POST",
-        body: JSON.stringify({   
-          name: refName.current.value,
-          email: refEmail.current.value,
-          password: refPassword.current.value,
-          image_url: refImage.current.value //just temporarily until our backend is prepered for image upload...
-        }),
+        body: formData,
         headers: {
-          'Content-Type': 'application/json'
-          // 'Content-Type': 'application/x-www-form-urlencoded',
         },
       });
       const data = await response.json();
-      console.log(data);
+      console.log(response.ok, data); // this response give us the token (data.token) to login the new signup user...
     } catch (error){
       console.log(error.message);
     }
@@ -38,8 +36,8 @@ const SignUp = () => {
       <Input ref={refName} type="text" name="name" placeholder="your name..." label="User Name : "/>
       <Input ref={refEmail} type="email" name="email" placeholder="your email..." label="User Email : "/>
       <Input ref={refPassword} type="password" name="password" placeholder="your password..." label="User Password : "/>
-      <Input ref={refImage} type="url" name="image" placeholder="your image url ..." label="User Picture : "/>
-      {/* <Input ref={refImage} type="file" name="image" accept=".jpg,.png,.jpeg" label="User Picture : "/> */}
+      {/* <Input ref={refImage} type="url" name="image" placeholder="your image url ..." label="User Picture : "/> */}
+      <Input ref={refImage} type="file" name="image" accept=".jpg,.png,.jpeg" label="User Picture : "/>
       <button className="btn btn-info" onClick={onSubmitHandler}>signup</button>
     </Wrapper>
   )
