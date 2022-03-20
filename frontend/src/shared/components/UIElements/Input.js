@@ -8,9 +8,11 @@ const Input = React.forwardRef((props, ref) => {
         {props.label}
       </label>
       <input
+        onBlur={props.onBlur}
+        onChange={props.onChange}
         ref={ref}
         type={props.type}
-        className="form-control"
+        className= {`form-control ${props.cssClasses}`}
         id={props.name}
         placeholder={props.placeholder}
         accept={props.accept}

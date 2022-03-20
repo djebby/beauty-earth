@@ -1,0 +1,17 @@
+.login{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    font-size: 1rem;
+    padding: 1rem 0;
+}
+
+.login a {
+    color: aqua;
+    text-decoration: none;
+    padding: 0.6rem;
+}
+
+.login p {
+    margin-top: 1rem;
+}

@@ -1,9 +1,153 @@
-import React from 'react'
+import React, { useRef, useState } from "react";
+import { Link } from "react-router-dom";
+import Wrapper from "../../shared/components/UIElements/Wrapper";
+import Input from "../../shared/components/UIElements/Input";
+
+import classes from "./Login.module.css";
 
 const Login = () => {
+  //-----------------------------------------------------------------------------------------------------------------------------hooks-part
+  const refEmail = useRef("");
+  const refPassword = useRef("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [inputValidation, setInputValidation] = useState({
+    emailCssClasses: "",
+    passwordCssClasses: "",
+    wrongInputsAlertVisibility: false,
+    wrongInputsAlertMessage: "",
+  });
+  //-----------------------------------------------------------------------------------------------------------------------------onSubmitHandler
+  const onSubmitHandler = async () => {
+    setIsLoading(true);
+    try {
+      if (
+        refEmail.current.value.includes("@") &&
+        refPassword.current.value.length >= 6
+      ) {
+        const formData = new FormData();
+        formData.append("email", refEmail.current.value);
+        formData.append("password", refPassword.current.value);
+        const response = await fetch(
+          `${process.env.REACT_APP_BACKEND_URL}users/login`,
+          {
+            method: "POST",
+            body: JSON.stringify({
+              email: refEmail.current.value,
+              password: refPassword.current.value,
+            }),
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        const data = await response.json();
+        setIsLoading(false);
+        if (response.ok) {
+          console.log(response.ok, data);
+          // this response give us the token (data.userToken) to login the user and we should redirect programmatically to the home page...
+        } else {
+          // wrong credentials invalid email or password or server error...
+          setInputValidation((prevInputValidation) => ({
+            ...prevInputValidation,
+            emailCssClasses: "is-invalid",
+            passwordCssClasses: "is-invalid",
+            wrongInputsAlertVisibility: true,
+            wrongInputsAlertMessage: data.message,
+          }));
+          setTimeout(() => {
+            setInputValidation((prevInputValidation) => ({
+              ...prevInputValidation,
+              emailCssClasses: "",
+              passwordCssClasses: "",
+              wrongInputsAlertVisibility: false,
+            }));
+          }, 5000);
+          console.log(response.ok); // failed to signup the user try again...
+        }
+      } else {
+        setIsLoading(false);
+        setInputValidation((prevInputValidation) => ({
+          ...prevInputValidation,
+          wrongInputsAlertVisibility: true,
+          wrongInputsAlertMessage: "Please Enter a Valid Credentials",
+        }));
+        setTimeout(() => {
+          setInputValidation((prevInputValidation) => ({
+            ...prevInputValidation,
+            wrongInputsAlertVisibility: false,
+          }));
+        }, 5000);
+      }
+    } catch (error) {
+      setIsLoading(false);
+      console.log(error.message);
+    }
+  };
+  //-----------------------------------------------------------------------------------------------------------------------------return(JSX)
   return (
-    <div>Login Page</div>
-  )
-}
+    <Wrapper>
+      {inputValidation.wrongInputsAlertVisibility && (
+        <div className="alert alert-danger" role="alert">
+          <i className="bi bi-exclamation-octagon-fill m-1"></i>
+          {inputValidation.wrongInputsAlertMessage}
+        </div>
+      )}
+      <Input
+        ref={refEmail}
+        type="email"
+        name="email"
+        placeholder="your email..."
+        label="User Email : "
+        cssClasses={inputValidation.emailCssClasses}
+        onBlur={() => {
+          setInputValidation((prevCssClasses) => ({
+            ...prevCssClasses,
+            emailCssClasses: refEmail.current.value.includes("@")
+              ? "is-valid"
+              : "is-invalid",
+          }));
+        }}
+      />
+      <Input
+        ref={refPassword}
+        type="password"
+        name="password"
+        placeholder="your password..."
+        label="User Password : "
+        cssClasses={inputValidation.passwordCssClasses}
+        onBlur={() => {
+          setInputValidation((prevCssClasses) => ({
+            ...prevCssClasses,
+            passwordCssClasses:
+              refPassword.current.value.length >= 6 ? "is-valid" : "is-invalid",
+          }));
+        }}
+      />
+      <div className={classes.login}>
+        <button
+          className="btn btn-info"
+          onClick={onSubmitHandler}
+          disabled={isLoading}
+        >
+          {isLoading ? (
+            <>
+              <span
+                className="spinner-border spinner-border-sm"
+                role="status"
+                aria-hidden="true"
+              ></span>
+              Loading...{" "}
+            </>
+          ) : (
+            "login"
+          )}
+        </button>
+        <p>
+          Don't have an account? <Link to="/signup">Sign Up</Link>
+        </p>
+      </div>
+    </Wrapper>
+  );
+};
 
 export default Login;

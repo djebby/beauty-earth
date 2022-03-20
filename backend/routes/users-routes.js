@@ -18,4 +18,11 @@ router.post(
   userControllers.signup
 );
 
+// POST /api/users/login
+router.post(
+  "/login",
+  [check("email").isEmail(), check("password").isLength({ min: 6 })],
+  userControllers.login
+);
+
 module.exports = router;

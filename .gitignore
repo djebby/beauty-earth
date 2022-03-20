@@ -1,5 +1,6 @@
 /backend/node_modules
 /backend/.env
 /backend/package-lock.json
+/backend/uploads/images/*
 /frontend/node_modules
 /frontend/package-lock.json
