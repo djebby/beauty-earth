@@ -16,12 +16,27 @@ const Login = () => {
     wrongInputsAlertVisibility: false,
     wrongInputsAlertMessage: "",
   });
+  //-----------------------------------------------------------------------------------------------------------------------------errorHandler
+  const errorHandler = (errorMessage) => {
+    setIsLoading(false);
+    setInputValidation((prevInputValidation) => ({
+      ...prevInputValidation,
+      wrongInputsAlertVisibility: true,
+      wrongInputsAlertMessage: errorMessage,
+    }));
+    setTimeout(() => {
+      setInputValidation((prevInputValidation) => ({
+        ...prevInputValidation,
+        wrongInputsAlertVisibility: false,
+      }));
+    }, 5000);
+  };
   //-----------------------------------------------------------------------------------------------------------------------------onSubmitHandler
   const onSubmitHandler = async () => {
     setIsLoading(true);
     try {
       if (
-        refEmail.current.value.includes("@") &&
+        refEmail.current.value.trim().includes("@") &&
         refPassword.current.value.length >= 6
       ) {
         const formData = new FormData();
@@ -47,40 +62,14 @@ const Login = () => {
           // this response give us the token (data.userToken) to login the user and we should redirect programmatically to the home page...
         } else {
           // wrong credentials invalid email or password or server error...
-          setInputValidation((prevInputValidation) => ({
-            ...prevInputValidation,
-            emailCssClasses: "is-invalid",
-            passwordCssClasses: "is-invalid",
-            wrongInputsAlertVisibility: true,
-            wrongInputsAlertMessage: data.message,
-          }));
-          setTimeout(() => {
-            setInputValidation((prevInputValidation) => ({
-              ...prevInputValidation,
-              emailCssClasses: "",
-              passwordCssClasses: "",
-              wrongInputsAlertVisibility: false,
-            }));
-          }, 5000);
+          errorHandler(data.message);
           console.log(response.ok); // failed to signup the user try again...
         }
       } else {
-        setIsLoading(false);
-        setInputValidation((prevInputValidation) => ({
-          ...prevInputValidation,
-          wrongInputsAlertVisibility: true,
-          wrongInputsAlertMessage: "Please Enter a Valid Credentials",
-        }));
-        setTimeout(() => {
-          setInputValidation((prevInputValidation) => ({
-            ...prevInputValidation,
-            wrongInputsAlertVisibility: false,
-          }));
-        }, 5000);
+        errorHandler("Please Enter a Valid Credentials");
       }
     } catch (error) {
-      setIsLoading(false);
-      console.log(error.message);
+      errorHandler("Failed to fetch");
     }
   };
   //-----------------------------------------------------------------------------------------------------------------------------return(JSX)
@@ -102,7 +91,7 @@ const Login = () => {
         onBlur={() => {
           setInputValidation((prevCssClasses) => ({
             ...prevCssClasses,
-            emailCssClasses: refEmail.current.value.includes("@")
+            emailCssClasses: refEmail.current.value.trim().includes("@")
               ? "is-valid"
               : "is-invalid",
           }));

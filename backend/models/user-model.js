@@ -7,8 +7,8 @@ const userSchema = new Schema({
   password: { type: String, required: true },
   image_url: { type: String, required: true },
   pictures_ids: [
-    { type: mongoose.Types.ObjectId, required: true, ref: "Picture" },
+    { type: mongoose.Types.ObjectId, required: true, ref: "pictures" },
   ],
 });
 
-module.exports = mongoose.model("User", userSchema);
+module.exports = mongoose.model("users", userSchema);

@@ -7,6 +7,7 @@ const fs = require("fs");
 const path = require("path");
 
 const usersRoutes = require("./routes/users-routes.js");
+const usersPictures = require("./routes/pictures-routes.js");
 
 app.use(bodyParser.json());
 app.use("/uploads/images", express.static(path.join("uploads", "images"))); //serve the image staticlly
@@ -20,6 +21,7 @@ app.use((req, res, next) => {
   next();
 });
 app.use("/api/users", usersRoutes);
+app.use("/api/pictures", usersPictures);
 
 // Error Handling Middelware
 app.use((error, req, res, next) => {
@@ -37,7 +39,7 @@ app.use((error, req, res, next) => {
 });
 
 mongoose
-  .connect(process.env.MONGO_URI)
+  .connect(process.env.LOCAL_MONGO_URI)
   .then(() => {
     console.log("Connection to DB Server Successfully ;)");
     app.listen(process.env.PORT || 4000);

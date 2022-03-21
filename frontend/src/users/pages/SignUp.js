@@ -20,13 +20,28 @@ const SignUp = () => {
     wrongInputsAlertVisibility: false,
     wrongInputsAlertMessage: "",
   });
+  //-----------------------------------------------------------------------------------------------------------------------------errorHandler
+  const errorHandler = (errorMessage) => {
+    setIsLoading(false);
+    setInputValidation((prevInputValidation) => ({
+      ...prevInputValidation,
+      wrongInputsAlertVisibility: true,
+      wrongInputsAlertMessage: errorMessage,
+    }));
+    setTimeout(() => {
+      setInputValidation((prevInputValidation) => ({
+        ...prevInputValidation,
+        wrongInputsAlertVisibility: false,
+      }));
+    }, 5000);
+  };
   //-----------------------------------------------------------------------------------------------------------------------------onSubmitHandler
   const onSubmitHandler = async () => {
     setIsLoading(true);
     try {
       if (
-        refName.current.value.length >= 6 &&
-        refEmail.current.value.includes("@") &&
+        refName.current.value.trim().length >= 6 &&
+        refEmail.current.value.trim().includes("@") &&
         refPassword.current.value.length >= 6 &&
         refImage.current.files[0] !== undefined
       ) {
@@ -50,36 +65,16 @@ const SignUp = () => {
           // this response give us the token (data.token) to login the new signup user and redirect to the home page...
         } else {
           //error from backend validation...
-          setInputValidation((prevInputValidation) => ({
-            ...prevInputValidation,
-            wrongInputsAlertVisibility: true,
-            wrongInputsAlertMessage: data.message,
-          }));
-          setTimeout(() => {
-            setInputValidation((prevInputValidation) => ({
-              ...prevInputValidation,
-              wrongInputsAlertVisibility: false,
-            }));
-          }, 5000);
+          errorHandler(data.message);
           console.log(data); // failed to signup the user try again...
         }
       } else {
         //error from frontend validation...
-        setIsLoading(false);
-        setInputValidation((prevInputValidation) => ({
-          ...prevInputValidation,
-          wrongInputsAlertVisibility: true,
-          wrongInputsAlertMessage: "Please Enter a Valid Inputs Value",
-        }));
-        setTimeout(() => {
-          setInputValidation((prevInputValidation) => ({
-            ...prevInputValidation,
-            wrongInputsAlertVisibility: false,
-          }));
-        }, 5000);
+        errorHandler("Please Enter a Valid Inputs Value");
       }
     } catch (error) {
-      console.log(error.message);
+      errorHandler("Failed to fetch");
+      console.log(error);
     }
   };
   //-----------------------------------------------------------------------------------------------------------------------------return(JSX)
@@ -102,7 +97,7 @@ const SignUp = () => {
           setInputValidation((prevCssClasses) => ({
             ...prevCssClasses,
             nameCssClasses:
-              refName.current.value.length >= 6 ? "is-valid" : "is-invalid",
+              refName.current.value.trim().length >= 6 ? "is-valid" : "is-invalid",
           }));
         }}
       />
@@ -116,7 +111,7 @@ const SignUp = () => {
         onBlur={() => {
           setInputValidation((prevCssClasses) => ({
             ...prevCssClasses,
-            emailCssClasses: refEmail.current.value.includes("@")
+            emailCssClasses: refEmail.current.value.trim().includes("@")
               ? "is-valid"
               : "is-invalid",
           }));
@@ -133,7 +128,7 @@ const SignUp = () => {
           setInputValidation((prevCssClasses) => ({
             ...prevCssClasses,
             passwordCssClasses:
-              refPassword.current.value.length >= 6 ? "is-valid" : "is-invalid",
+              refPassword.current.value.trim().length >= 6 ? "is-valid" : "is-invalid",
           }));
         }}
       />
