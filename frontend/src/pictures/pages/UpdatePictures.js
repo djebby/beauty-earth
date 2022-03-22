@@ -1,9 +1,10 @@
-import React from 'react';
+import React from "react";
+import { useParams } from "react-router-dom";
 
 const UpdatePictures = () => {
-  return (
-    <div>UpdatePictures</div>
-  )
-}
+  const pid = useParams().picId;
+
+  return <div>UpdatePictures ID == {pid}</div>;
+};
 
 export default UpdatePictures;

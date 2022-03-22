@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Wrapper from "../../shared/components/UIElements/Wrapper";
 import Input from "../../shared/components/UIElements/Input";
 
@@ -11,6 +11,7 @@ const SignUp = () => {
   const refEmail = useRef("");
   const refPassword = useRef("");
   const refImage = useRef();
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [inputValidation, setInputValidation] = useState({
     nameCssClasses: "",
@@ -63,6 +64,7 @@ const SignUp = () => {
         if (response.ok) {
           console.log(response.ok, data);
           // this response give us the token (data.token) to login the new signup user and redirect to the home page...
+          navigate("/");
         } else {
           //error from backend validation...
           errorHandler(data.message);

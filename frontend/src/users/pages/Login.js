@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Wrapper from "../../shared/components/UIElements/Wrapper";
 import Input from "../../shared/components/UIElements/Input";
 
@@ -9,6 +9,7 @@ const Login = () => {
   //-----------------------------------------------------------------------------------------------------------------------------hooks-part
   const refEmail = useRef("");
   const refPassword = useRef("");
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [inputValidation, setInputValidation] = useState({
     emailCssClasses: "",
@@ -60,6 +61,7 @@ const Login = () => {
         if (response.ok) {
           console.log(response.ok, data);
           // this response give us the token (data.userToken) to login the user and we should redirect programmatically to the home page...
+          navigate("/");
         } else {
           // wrong credentials invalid email or password or server error...
           errorHandler(data.message);

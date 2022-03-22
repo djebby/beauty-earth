@@ -4,15 +4,32 @@ const HttpError = require("../models/http-error.js");
 const Pictures = require("../models/pictures-model.js");
 const User = require("../models/user-model.js");
 
+// GET => /api/places
+const getPictures = async (req, res, next) => {
+  let pictures = undefined;
+  try {
+    pictures = await Pictures.find().populate({
+      path: "creator_id",
+      select: "name image_url",
+    });
+  } catch (error) {
+    return next(
+      new HttpError(
+        "Could not fetching the data, The Database Server has some issus.",
+        500
+      )
+    );
+  }
+
+  res.json({ pictures });
+};
+
 // POST => /api/places
 const createPictures = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return next(
-      new HttpError(
-        "Invalid inputs passed, please check your data.",
-        404
-      )
+      new HttpError("Invalid inputs passed, please check your data.", 404)
     );
   }
   const { title, description, address } = req.body;
@@ -20,7 +37,7 @@ const createPictures = async (req, res, next) => {
   let newPic = undefined;
   let user = undefined;
   try {
-    user = await User.findById("62385d55706ae98bebc2fb5a"); // the user id should come from the chech-auth middleware
+    user = await User.findById("6239eab66c1eddaed2f4fcee"); // the user id should come from the chech-auth middleware
     if (!user) {
       return next(new HttpError("sorry there is no user with this id ", 404));
     }
@@ -29,7 +46,7 @@ const createPictures = async (req, res, next) => {
       description,
       image_url: req.file.path,
       address,
-      creator_id: "62385d55706ae98bebc2fb5a",
+      creator_id: "6239eab66c1eddaed2f4fcee",
     });
     await newPic.save();
     user.pictures_ids.push(newPic);
@@ -45,4 +62,4 @@ const createPictures = async (req, res, next) => {
   res.status(201).json({ newPic });
 };
 
-module.exports = { createPictures };
+module.exports = { createPictures, getPictures };

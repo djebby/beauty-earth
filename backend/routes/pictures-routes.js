@@ -5,6 +5,8 @@ const { check } = require("express-validator");
 const picturesControllers = require("../controllers/pictures-controllers.js");
 const fileUpload = require("../middleware/file-upload.js");
 
+router.get("/", picturesControllers.getPictures);
+
 router.post(
   "/",
   fileUpload.single("image"),

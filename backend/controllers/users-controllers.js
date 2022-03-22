@@ -26,7 +26,7 @@ const signup = async (req, res, next) => {
   } catch (error) {
     return next(
       new HttpError(
-        "Could not create a new user, Data Base Server has some issus.",
+        "Could not create a new user, Database Server has some issus.",
         500
       )
     );

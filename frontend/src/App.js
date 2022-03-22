@@ -21,7 +21,7 @@ function App() {
         <Route path="/signup" element={<SignUp />}/>
         <Route path="/:userId/pictures" element={<UserPictures />}/>
         <Route path="/pictures/new" element={<NewPicture />}/>
-        <Route path="/pictures/:picId" element={<UpdatePictures />} />
+        <Route path="/pictures/update/:picId" element={<UpdatePictures />} />
       </Routes>
       </main>
     </div>
