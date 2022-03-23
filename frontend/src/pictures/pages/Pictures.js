@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import Wrapper from "../../shared/components/UIElements/Wrapper.js";
+import PictureCard from "../components/PictureCard.js";
 
 import classes from "./Pictures.module.css";
 
@@ -34,10 +33,23 @@ const Pictures = () => {
   }, []);
   //-----------------------------------------------------------------------------------------------------------------------------pictureDeleteHandler
   const pictureDeleteHandler = async (id) => {
-    console.log(
-      "this function is for deleting the picture with this id =>",
-      id
-    );
+    try {
+      const response = await fetch(
+        `${process.env.REACT_APP_BACKEND_URL}pictures/${id}`,
+        { method: "DELETE" }
+      );
+      if (response.ok) {
+        //if the response is ok we should filter out the deleted pic from the array
+        setPictures((oldPictures) =>
+          oldPictures.filter((pic) => pic._id !== id)
+        );
+      }
+    } catch (error) {
+      setError(true);
+      setTimeout(() => {
+        setError(false);
+      }, 1000);
+    }
   };
   //-----------------------------------------------------------------------------------------------------------------------------return(JSX)
   return error ? (
@@ -53,44 +65,17 @@ const Pictures = () => {
     >
       <span className="visually-hidden">Loading...</span>
     </div>
+  ) : pictures.length === 0 ? (
+    <div className="alert alert-warning" role="alert">
+      No Picture Founded!
+    </div>
   ) : (
     pictures.map((picture) => (
-      <Wrapper key={picture._id}>
-        <img
-          className={classes.img}
-          src={`${process.env.REACT_APP_ASSET_URL + picture.image_url}`}
-        />
-        <div className={classes.row}>
-          <h3>{picture.title}</h3>
-          <Link to={`/${picture.creator_id._id}/pictures`}>
-            <img
-              className={classes.img_avatar}
-              src={`${
-                process.env.REACT_APP_ASSET_URL + picture.creator_id.image_url
-              }`}
-            />
-            {picture.creator_id.name}
-          </Link>
-        </div>
-        <p>{picture.description}</p>
-        <h6>
-          <i className="bi bi-geo-alt-fill"></i> {picture.address}
-        </h6>
-        <div className={classes.edit_delete}>
-          <Link to={`/pictures/update/${picture._id}`}>
-            <button type="button" className="btn btn-success mx-4">
-              Editing
-            </button>
-          </Link>
-          <button
-            type="button"
-            className="btn btn-danger"
-            onClick={pictureDeleteHandler.bind(this, picture._id)}
-          >
-            Delete
-          </button>
-        </div>
-      </Wrapper>
+      <PictureCard
+        key={picture._id}
+        picture={picture}
+        pictureDeleteHandler={pictureDeleteHandler}
+      />
     ))
   );
 };

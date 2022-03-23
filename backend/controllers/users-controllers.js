@@ -5,7 +5,31 @@ const { validationResult } = require("express-validator"); // npm i express-vali
 const HttpError = require("../models/http-error.js");
 const User = require("../models/user-model.js");
 
-// POST /api/users/signup
+//-----------------------------------------------------------------------------------------------------------------------------GET /api/users/:userId
+const getUserPictures = async (req, res, next) => {
+  const userId = req.params.userId;
+  let userPictures = undefined;
+  try {
+    userPictures = await User.findById(userId, "-password").populate({
+      path: "pictures_ids",
+      select: "-creator_id",
+    });
+    if (userPictures === null) {
+      throw new Error();
+    }
+  } catch (error) {
+    if (userPictures === undefined || userPictures === null) {
+      return next(
+        new HttpError(`There is no user with this id ${userId}`, 404)
+      );
+    }
+    return next(new HttpError("Error in the database server", 500));
+  }
+
+  res.status(200).json({ userPictures });
+};
+
+//-----------------------------------------------------------------------------------------------------------------------------POST /api/users/signup
 const signup = async (req, res, next) => {
   const error = validationResult(req);
   if (!error.isEmpty()) {
@@ -16,9 +40,7 @@ const signup = async (req, res, next) => {
       )
     );
   }
-
   const { name, email, password } = req.body;
-
   //check the availability of the email in the database
   let isEmailExist = undefined;
   try {
@@ -37,7 +59,6 @@ const signup = async (req, res, next) => {
       new HttpError("Could not create a new user, email already exist.", 422)
     );
   }
-
   //password encryption...
   let cryptedPassword = undefined;
   try {
@@ -47,7 +68,6 @@ const signup = async (req, res, next) => {
       new HttpError("Could not create a new user, Server has some issus.", 500)
     );
   }
-
   let newUser = undefined;
   try {
     newUser = new User({
@@ -63,7 +83,6 @@ const signup = async (req, res, next) => {
       new HttpError("Could not create a new user, invalid credentials...", 404)
     );
   }
-
   //token generation...
   let token = undefined;
   try {
@@ -80,7 +99,6 @@ const signup = async (req, res, next) => {
       )
     );
   }
-
   res.status(201).json({
     message: "user added successfully",
     userId: newUser.id,
@@ -89,7 +107,7 @@ const signup = async (req, res, next) => {
   });
 };
 
-// POST /api/users/login
+//-----------------------------------------------------------------------------------------------------------------------------POST /api/users/login
 const login = async (req, res, next) => {
   const error = validationResult(req);
   if (!error.isEmpty()) {
@@ -103,17 +121,19 @@ const login = async (req, res, next) => {
   const { email, password } = req.body;
   let existingUser = undefined;
   try {
-    existingUser = await User.findOne({ email : email });
+    existingUser = await User.findOne({ email: email });
   } catch (error) {
-    return next(new HttpError(
-      "Could not login you, the server has some issus.",
-      500
-    ));
+    return next(
+      new HttpError("Could not login you, the server has some issus.", 500)
+    );
   }
 
-  if(!existingUser){
+  if (!existingUser) {
     return next(
-      new HttpError("sorry there is no user with this email in our database", 401)
+      new HttpError(
+        "sorry there is no user with this email in our database",
+        401
+      )
     );
   }
 
@@ -123,17 +143,12 @@ const login = async (req, res, next) => {
     passwordValidity = await bcrypt.compare(password, existingUser.password);
   } catch (error) {
     return next(
-      new HttpError(
-        "Could not login you, the server has some issus.",
-        500
-      )
+      new HttpError("Could not login you, the server has some issus.", 500)
     );
   }
 
-  if(!passwordValidity){
-    return next(
-      new HttpError("wrong password", 401)
-    );
+  if (!passwordValidity) {
+    return next(new HttpError("wrong password", 401));
   }
 
   //token generation part ...
@@ -152,7 +167,6 @@ const login = async (req, res, next) => {
       )
     );
   }
-
   res.status(200).json({
     message: "user logedin successfully",
     userId: existingUser.id,
@@ -161,4 +175,4 @@ const login = async (req, res, next) => {
   });
 };
 
-module.exports = { signup, login };
+module.exports = { getUserPictures, signup, login };

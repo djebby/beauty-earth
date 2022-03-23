@@ -5,8 +5,9 @@ const { check } = require("express-validator");
 const picturesControllers = require("../controllers/pictures-controllers.js");
 const fileUpload = require("../middleware/file-upload.js");
 
+//------------------------------------------------------------------------------GET => /api/places
 router.get("/", picturesControllers.getPictures);
-
+//------------------------------------------------------------------------------POST => /api/places
 router.post(
   "/",
   fileUpload.single("image"),
@@ -16,5 +17,7 @@ router.post(
   ],
   picturesControllers.createPictures
 );
+//------------------------------------------------------------------------------DELETE => /api/places/:picId
+router.delete("/:picId", picturesControllers.deletePicture);
 
 module.exports = router;

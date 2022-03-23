@@ -1,0 +1,7 @@
+.avatar__img{
+    width: 20vw;
+    background-color: white;
+    border-radius: 50% 50%;
+    margin: 1rem;
+    align-self: center;
+}

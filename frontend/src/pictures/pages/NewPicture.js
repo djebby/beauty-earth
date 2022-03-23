@@ -58,7 +58,6 @@ const NewPicture = () => {
         setIsLoading(false);
         if (response.ok) {
           // this response give us the new posted picture
-          console.log(response.ok, data);
           setSuccessAlertVisibility(true);
           setTimeout(() => {
             setSuccessAlertVisibility(false);

@@ -1,0 +1,45 @@
+.img {
+    width: 75vw;
+    margin-bottom: 1rem;
+    border-radius: 1rem;
+  }
+  .img_avatar {
+    width: 6vw;
+    margin-right: 3vw;
+    background-color: white;
+    border-radius: 50%;
+  }
+  
+  .row {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    margin: 1rem 0;
+  }
+  .edit_delete {
+      margin-top: 1rem;
+    align-self: flex-end;
+  }
+  
+  a {
+    color: white;
+    font-size: 1.2rem;
+    text-decoration: none;
+  }
+  
+  a:hover {
+    color: aqua;
+  }
+  
+  @media (min-width: 768px) {
+    .img {
+      width: 50vw;
+    }
+    .img_avatar {
+      width: 2vw;
+      margin-right: 1vw;
+      background-color: white;
+      border-radius: 50%;
+    }
+  }
+  
