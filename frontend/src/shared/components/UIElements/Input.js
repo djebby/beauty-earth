@@ -14,6 +14,7 @@ const Input = React.forwardRef((props, ref) => {
         type={props.type}
         className= {`form-control ${props.cssClasses}`}
         id={props.name}
+        defaultValue={props.defaultValue}
         placeholder={props.placeholder}
         accept={props.accept}
       />

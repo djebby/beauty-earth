@@ -40,9 +40,6 @@ const Login = () => {
         refEmail.current.value.trim().includes("@") &&
         refPassword.current.value.length >= 6
       ) {
-        const formData = new FormData();
-        formData.append("email", refEmail.current.value);
-        formData.append("password", refPassword.current.value);
         const response = await fetch(
           `${process.env.REACT_APP_BACKEND_URL}users/login`,
           {
