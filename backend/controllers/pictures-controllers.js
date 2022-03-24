@@ -25,8 +25,35 @@ const getPictures = async (req, res, next) => {
 
   res.json({ pictures });
 };
+//-----------------------------------------------------------------------------------------------------------------------------GET => /api/places/:picId
+const getPicture = async (req, res, next) => {
+  const pictureId = req.params.picId;
+  let picture = undefined;
+  try {
+    picture = await Pictures.findById(pictureId);
+  } catch (error) {
+    return next(
+      new HttpError(
+        "Could not fetching the data, The Database Server has some issus.",
+        500
+      )
+    );
+  }
+
+  if (!picture) {
+    return next(
+      new HttpError(
+        `Could not find a picture with the provided id : ${pictureId}`,
+        404
+      )
+    );
+  }
+
+  res.status(200).json({ picture });
+};
+
 //-----------------------------------------------------------------------------------------------------------------------------POST => /api/places
-const createPictures = async (req, res, next) => {
+const createPicture = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return next(
@@ -61,6 +88,53 @@ const createPictures = async (req, res, next) => {
     );
   }
   res.status(201).json({ newPic });
+};
+//-----------------------------------------------------------------------------------------------------------------------------PATCH => /api/places/:picId
+const updatePicture = async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return next(
+      new HttpError("Invalid passed inputs, please check your data.", 400)
+    );
+  }
+  const pictureId = req.params.picId;
+  let picture = undefined;
+  //looking for the picture in the database
+  try {
+    picture = await Pictures.findById(pictureId);
+  } catch (error) {
+    return next(
+      new HttpError(`Database Server Error We Are Sory ! Please Try Again`, 500)
+    );
+  }
+  //send an error if we don't find any pic with the given id
+  if (!picture) {
+    return next(
+      new HttpError(
+        `Could not find a picture to delete with the provided id: ${pictureId}`,
+        404
+      )
+    );
+  }
+  //here we will check if the user is authorized to update the picture...
+  //...
+  const {
+    title: newTitle,
+    description: newDescription,
+    address: newAddress,
+  } = req.body;
+  picture.title = newTitle;
+  picture.description = newDescription;
+  picture.address = newAddress;
+  let newPicture = undefined;
+  try {
+    newPicture = await picture.save();
+    res.status(201).json({ newPicture });
+  } catch (error) {
+    return next(
+      new HttpError("Database Server Error We Are Sory ! Please Try Again", 500)
+    );
+  }
 };
 //-----------------------------------------------------------------------------------------------------------------------------DELETE => /api/places/:picId
 const deletePicture = async (req, res, next) => {
@@ -117,4 +191,10 @@ const deletePicture = async (req, res, next) => {
   }
 };
 
-module.exports = { createPictures, getPictures, deletePicture };
+module.exports = {
+  getPictures,
+  getPicture,
+  createPicture,
+  updatePicture,
+  deletePicture,
+};

@@ -7,6 +7,8 @@ const fileUpload = require("../middleware/file-upload.js");
 
 //------------------------------------------------------------------------------GET => /api/places
 router.get("/", picturesControllers.getPictures);
+//------------------------------------------------------------------------------GET => /api/places/:picId
+router.get("/:picId", picturesControllers.getPicture);
 //------------------------------------------------------------------------------POST => /api/places
 router.post(
   "/",
@@ -15,8 +17,18 @@ router.post(
     check("title").isLength({ min: 3 }),
     check("description").isLength({ min: 10 }),
   ],
-  picturesControllers.createPictures
+  picturesControllers.createPicture
 );
+//------------------------------------------------------------------------------PATCH => /api/places/:picId
+router.patch(
+  "/:picId",
+  [
+    check("title").isLength({ min: 3 }),
+    check("description").isLength({ min: 10 }),
+  ],
+  picturesControllers.updatePicture
+);
+
 //------------------------------------------------------------------------------DELETE => /api/places/:picId
 router.delete("/:picId", picturesControllers.deletePicture);
 
