@@ -111,13 +111,16 @@ const updatePicture = async (req, res, next) => {
   if (!picture) {
     return next(
       new HttpError(
-        `Could not find a picture to delete with the provided id: ${pictureId}`,
+        `Could not find a picture to update with the provided id: ${pictureId}`,
         404
       )
     );
   }
-  //here we will check if the user is authorized to update the picture...
-  //...
+  //check if the user is authorized to update the picture...
+  if(picture.creator_id.toString() !== req.userData.userId) {
+    return next(new HttpError("You are not authorized to edit this picture", 401));
+  }
+
   const {
     title: newTitle,
     description: newDescription,
@@ -129,7 +132,7 @@ const updatePicture = async (req, res, next) => {
   let newPicture = undefined;
   try {
     newPicture = await picture.save();
-    res.status(201).json({ newPicture });
+    res.status(201).json({ userData: req.userData, newPicture });
   } catch (error) {
     return next(
       new HttpError("Database Server Error We Are Sory ! Please Try Again", 500)
@@ -159,8 +162,10 @@ const deletePicture = async (req, res, next) => {
       )
     );
   }
-  //here we will check if the user is authorized to delete the picture...
-  //...
+  //check if the user is authorized to delete the picture...
+  if(picture.creator_id._id.toString() !== req.userData.userId) {
+    return next(new HttpError(" You are not authorized to delete this picture ", 401));
+  }
 
   //finally let's try to delete the picture
   try {

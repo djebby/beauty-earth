@@ -4,11 +4,14 @@ const { check } = require("express-validator");
 
 const picturesControllers = require("../controllers/pictures-controllers.js");
 const fileUpload = require("../middleware/file-upload.js");
+const checkAuth = require("../middleware/check-auth.js");
 
 //------------------------------------------------------------------------------GET => /api/places
 router.get("/", picturesControllers.getPictures);
 //------------------------------------------------------------------------------GET => /api/places/:picId
 router.get("/:picId", picturesControllers.getPicture);
+//------------------------------------------------------------------------------authentication-check
+router.use(checkAuth);
 //------------------------------------------------------------------------------POST => /api/places
 router.post(
   "/",
