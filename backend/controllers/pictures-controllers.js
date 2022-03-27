@@ -65,7 +65,7 @@ const createPicture = async (req, res, next) => {
   let newPic = undefined;
   let user = undefined;
   try {
-    user = await User.findById("623a10444353e3f117050126"); // the user id should come from the chech-auth middleware
+    user = await User.findById(req.userData.userId); // req.userData.userId comming from the check-auth middleware
     if (!user) {
       return next(new HttpError("sorry there is no user with this id ", 404));
     }
@@ -74,7 +74,7 @@ const createPicture = async (req, res, next) => {
       description,
       image_url: req.file.path,
       address,
-      creator_id: "623a10444353e3f117050126",
+      creator_id: req.userData.userId,
     });
     await newPic.save();
     user.pictures_ids.push(newPic);

@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from "react";
-import PictureCard from "../components/PictureCard.js";
+import React, { useState, useEffect, useContext } from "react";
 
+import { AuthContext } from "../../shared/context/auth-context.js";
+import PictureCard from "../components/PictureCard.js";
 import classes from "./Pictures.module.css";
 
 const Pictures = () => {
   //-----------------------------------------------------------------------------------------------------------------------------hooks-part
+  const logCtx = useContext(AuthContext);
   const [isLoading, setIsLoading] = useState(true);
   const [pictures, setPictures] = useState([]);
   const [error, setError] = useState(false);
@@ -36,7 +38,7 @@ const Pictures = () => {
     try {
       const response = await fetch(
         `${process.env.REACT_APP_BACKEND_URL}pictures/${id}`,
-        { method: "DELETE" }
+        { method: "DELETE", body:{}, headers: {Authorization: `Bearer ${logCtx.token}`} }
       );
       if (response.ok) {
         //if the response is ok we should filter out the deleted pic from the array

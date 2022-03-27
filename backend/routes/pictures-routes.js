@@ -10,7 +10,7 @@ const checkAuth = require("../middleware/check-auth.js");
 router.get("/", picturesControllers.getPictures);
 //------------------------------------------------------------------------------GET => /api/places/:picId
 router.get("/:picId", picturesControllers.getPicture);
-//------------------------------------------------------------------------------authentication-check
+//------------------------------------------------------------------------------authentication-check 
 router.use(checkAuth);
 //------------------------------------------------------------------------------POST => /api/places
 router.post(

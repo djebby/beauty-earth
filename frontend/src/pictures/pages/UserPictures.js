@@ -1,14 +1,16 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useParams } from "react-router-dom";
 
-import classes from "./UserPictures.module.css";
+import { AuthContext } from "../../shared/context/auth-context.js";
 import PictureCard from "../components/PictureCard.js";
 import UserAvatar from "../components/UserAvatar";
+import classes from "./UserPictures.module.css";
 
 const UserPictures = () => {
   //-----------------------------------------------------------------------------------------------------------------------------hooks-part
+  const logCtx = useContext(AuthContext);
   const [isLoading, setIsLoading] = useState(true);
-  const [userPictures, setUserPictures] = useState([]);
+  const [userPictures, setUserPictures] = useState({});
   const [error, setError] = useState(false);
   const userId = useParams().userId;
   //-----------------------------------------------------------------------------------------------------------------------------fetching-data
@@ -23,10 +25,24 @@ const UserPictures = () => {
           setError(true);
         }
         const data = await response.json();
-        console.log(response.status);
-        console.log(data);
+
         if (response.ok && data.userPictures !== null) {
-          setUserPictures(data.userPictures);
+          let picturesArray = data.userPictures.pictures_ids.map((pic) => ({
+            ...pic,
+            creator_id: {
+              _id: data.userPictures._id,
+              email: data.userPictures.email,
+              name: data.userPictures.name,
+              image_url: data.userPictures.image_url,
+            },
+          }));
+          let creator = {
+            _id: data.userPictures._id,
+            email: data.userPictures.email,
+            name: data.userPictures.name,
+            image_url: data.userPictures.image_url,
+          };
+          setUserPictures({ pictures: picturesArray, creator });
           setIsLoading(false);
         }
       } catch (error) {
@@ -41,13 +57,18 @@ const UserPictures = () => {
     try {
       const response = await fetch(
         `${process.env.REACT_APP_BACKEND_URL}pictures/${id}`,
-        { method: "DELETE" }
+        {
+          method: "DELETE",
+          body: {},
+          headers: { Authorization: `Bearer ${logCtx.token}` },
+        }
       );
       if (response.ok) {
         //if the response is ok we should filter out the deleted pic from the array
-        setUserPictures((oldPictures) =>
-          oldPictures.filter((pic) => pic._id !== id)
-        );
+        setUserPictures((oldUserPictures) => ({
+          ...oldUserPictures,
+          pictures: oldUserPictures.pictures.filter((pic) => pic._id !== id),
+        }));
       }
     } catch (error) {
       setError(true);
@@ -62,7 +83,7 @@ const UserPictures = () => {
       <i className="bi bi-exclamation-octagon-fill m-1"></i>
       There is no response backed from the server
     </div>
-  ) : isLoading || userPictures.length === 0 ? (
+  ) : isLoading ? (
     <div
       className="spinner-border"
       style={{ width: "3rem", height: "3rem", margin: "0 48vw" }}
@@ -70,12 +91,12 @@ const UserPictures = () => {
     >
       <span className="visually-hidden">Loading...</span>
     </div>
-  ) : userPictures.pictures_ids.length === 0 ? (
+  ) : userPictures.pictures.length === 0 ? (
     <>
       <UserAvatar
-        name={userPictures.name}
-        email={userPictures.email}
-        image_url={userPictures.image_url}
+        name={userPictures.creator.name}
+        email={userPictures.creator.email}
+        image_url={userPictures.creator.image_url}
       />
 
       <div className="alert alert-warning" role="alert">
@@ -85,11 +106,11 @@ const UserPictures = () => {
   ) : (
     <>
       <UserAvatar
-        name={userPictures.name}
-        email={userPictures.email}
-        image_url={userPictures.image_url}
+        name={userPictures.creator.name}
+        email={userPictures.creator.email}
+        image_url={userPictures.creator.image_url}
       />
-      {userPictures.pictures_ids.map((picture) => (
+      {userPictures.pictures.map((picture) => (
         <PictureCard
           key={picture._id}
           picture={picture}

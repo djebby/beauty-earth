@@ -1,10 +1,15 @@
-import React from "react";
+import React, {useContext} from "react";
 import { Link } from "react-router-dom";
 
+import { AuthContext } from "../../shared/context/auth-context.js";
 import Wrapper from "../../shared/components/UIElements/Wrapper.js";
 import classes from "./PictureCard.module.css";
 
 const PictureCard = ({ picture, pictureDeleteHandler }) => {
+
+  const logCtx = useContext(AuthContext);
+  
+
   return (
     <Wrapper>
       <img
@@ -30,7 +35,7 @@ const PictureCard = ({ picture, pictureDeleteHandler }) => {
       <h6>
         <i className="bi bi-geo-alt-fill"></i> {picture.address}
       </h6>
-      <div className={classes.edit_delete}>
+      {logCtx.isLoggedIn &&  (logCtx.userId === picture.creator_id._id ) && <div className={classes.edit_delete}>
         <Link to={`/pictures/update/${picture._id}`}>
           <button type="button" className="btn btn-success mx-4">
             Editing
@@ -43,7 +48,7 @@ const PictureCard = ({ picture, pictureDeleteHandler }) => {
         >
           Delete
         </button>
-      </div>
+      </div>}
     </Wrapper>
   );
 };

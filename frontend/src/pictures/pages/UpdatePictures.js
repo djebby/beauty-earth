@@ -1,12 +1,15 @@
-import React, { useState, useEffect, useRef } from "react";
-import { useParams } from "react-router-dom";
+import React, { useState, useEffect, useRef, useContext } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 
-import classes from "./UpdatePictures.module.css";
+import { AuthContext } from "../../shared/context/auth-context.js";
 import Wrapper from "../../shared/components/UIElements/Wrapper.js";
 import Input from "../../shared/components/UIElements/Input.js";
+import classes from "./UpdatePictures.module.css";
 
 const UpdatePictures = () => {
   //-----------------------------------------------------------------------------------------------------------------------------hooks-part
+  const logCtx = useContext(AuthContext);
+  const navigation = useNavigate();
   const refTitle = useRef("");
   const refDescription = useRef("");
   const refAddress = useRef("");
@@ -21,6 +24,7 @@ const UpdatePictures = () => {
     wrongInputsAlertVisibility: false,
     wrongInputsAlertMessage: "",
   });
+ 
   //-----------------------------------------------------------------------------------------------------------------------------fetching-data
   useEffect(() => {
     const fetchPicture = async () => {
@@ -30,6 +34,9 @@ const UpdatePictures = () => {
         );
         if (response.ok) {
           const data = await response.json();
+          if(data.picture.creator_id !== logCtx.userId){
+            navigation("/");
+          }
           setPicture(data.picture);
         } else {
           setError(true);
@@ -75,6 +82,7 @@ const UpdatePictures = () => {
             }),
             headers: {
               "Content-Type": "application/json",
+              Authorization: `Bearer ${logCtx.token}`
             },
           }
         );

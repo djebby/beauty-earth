@@ -1,12 +1,15 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import Wrapper from "../../shared/components/UIElements/Wrapper";
-import Input from "../../shared/components/UIElements/Input";
+
+import Wrapper from "../../shared/components/UIElements/Wrapper.js";
+import Input from "../../shared/components/UIElements/Input.js";
+import { AuthContext } from "../../shared/context/auth-context.js";
 
 import classes from "./Login.module.css";
 
 const Login = () => {
   //-----------------------------------------------------------------------------------------------------------------------------hooks-part
+  const logCtx = useContext(AuthContext);
   const refEmail = useRef("");
   const refPassword = useRef("");
   const navigate = useNavigate();
@@ -56,8 +59,9 @@ const Login = () => {
         const data = await response.json();
         setIsLoading(false);
         if (response.ok) {
-          console.log(response.ok, data);
-          // this response give us the token (data.userToken) to login the user and we should redirect programmatically to the home page...
+          // if the user login successfully we should store the userId (data.userId) & the userToken (data.userToken) in the Context
+          logCtx.login(data.userId, data.userToken);
+          // we should redirect programmatically to the home page...
           navigate("/");
         } else {
           // wrong credentials invalid email or password or server error...

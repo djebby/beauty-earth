@@ -1,12 +1,16 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
+
+import { AuthContext } from "../../shared/context/auth-context";
 import Wrapper from "../../shared/components/UIElements/Wrapper";
 import Input from "../../shared/components/UIElements/Input";
+
 
 import classes from "./SignUp.module.css";
 
 const SignUp = () => {
   //-----------------------------------------------------------------------------------------------------------------------------hooks-part
+  const logCtx = useContext(AuthContext); console.log(logCtx);
   const refName = useRef("");
   const refEmail = useRef("");
   const refPassword = useRef("");
@@ -62,8 +66,9 @@ const SignUp = () => {
         const data = await response.json();
         setIsLoading(false);
         if (response.ok) {
-          console.log(response.ok, data);
-          // this response give us the token (data.token) to login the new signup user and redirect to the home page...
+          // if the user signup successfully we should store the userId (data.userId) & the userToken (data.userToken) in the Context  
+          logCtx.login(data.userId, data.userToken);
+          // we should redirect programmatically to the home page...
           navigate("/");
         } else {
           //error from backend validation...

@@ -1,9 +1,12 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useContext } from "react";
+
+import {AuthContext} from "../../shared/context/auth-context.js";
 import Wrapper from "../../shared/components/UIElements/Wrapper.js";
 import Input from "../../shared/components/UIElements/Input.js";
 
 const NewPicture = () => {
   //-----------------------------------------------------------------------------------------------------------------------------hooks-part
+  const logCtx = useContext(AuthContext);
   const refTitle = useRef("");
   const refDescription = useRef("");
   const refAddress = useRef("");
@@ -51,7 +54,9 @@ const NewPicture = () => {
           {
             method: "POST",
             body: formData,
-            headers: {},
+            headers: {
+              Authorization: `Bearer ${logCtx.token}`
+            },
           }
         );
         const data = await response.json();
