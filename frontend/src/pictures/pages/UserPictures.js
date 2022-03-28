@@ -21,8 +21,8 @@ const UserPictures = () => {
           `${process.env.REACT_APP_BACKEND_URL}users/${userId}`
         );
         if (!response.ok) {
-          setIsLoading(false);
           setError(true);
+          setIsLoading(false);
         }
         const data = await response.json();
 
@@ -46,8 +46,8 @@ const UserPictures = () => {
           setIsLoading(false);
         }
       } catch (error) {
-        setIsLoading(false);
         setError(true);
+        setIsLoading(false);
       }
     };
     fetchPictures();
@@ -91,7 +91,7 @@ const UserPictures = () => {
     >
       <span className="visually-hidden">Loading...</span>
     </div>
-  ) : userPictures.pictures.length === 0 ? (
+  ) :  userPictures.pictures.length === 0 ? (
     <>
       <UserAvatar
         name={userPictures.creator.name}

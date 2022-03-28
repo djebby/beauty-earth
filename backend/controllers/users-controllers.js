@@ -83,7 +83,7 @@ const signup = async (req, res, next) => {
       new HttpError("Could not create a new user, invalid credentials...", 404)
     );
   }
-  //token generation...
+  //token ( with 2days validation ) generation part ...
   let token = undefined;
   try {
     token = jwt.sign(
@@ -103,6 +103,7 @@ const signup = async (req, res, next) => {
     message: "user added successfully",
     userId: newUser.id,
     userEmail: email,
+    expirationTime: new Date(new Date().getTime() + 1000 * 60 * 60 * 48).getTime(), // 2 days in the future 1000milliseconds * 60 = 1seconde * 60 = 1hour * 48 = 2days
     userToken: token,
   });
 };
@@ -151,7 +152,7 @@ const login = async (req, res, next) => {
     return next(new HttpError("wrong password", 401));
   }
 
-  //token generation part ...
+  //token ( with 2days validation ) generation part ...
   let token = undefined;
   try {
     token = jwt.sign(
@@ -159,6 +160,7 @@ const login = async (req, res, next) => {
       process.env.JWT_KEY,
       { expiresIn: "48h" }
     );
+    
   } catch (error) {
     return next(
       new HttpError(
@@ -171,6 +173,7 @@ const login = async (req, res, next) => {
     message: "user logedin successfully",
     userId: existingUser.id,
     userEmail: existingUser.email,
+    expirationTime: new Date(new Date().getTime() + 1000 * 60 * 60 * 48 ).getTime(), // 2 days in the future 1000milliseconds * 60 = 1seconde * 60 = 1hour * 48 = 2days
     userToken: token,
   });
 };

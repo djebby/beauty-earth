@@ -14,23 +14,37 @@ import SignUp from "./users/pages/SignUp.js";
 function App() {
   const [token, setToken] = useState(null);
   const [userId, setUserId] = useState(null);
+  const [tokenExpTime, setTokenExpTime] = useState(null);
 
-  const login = (uid, token) => {
+  const login = (uid, token, expirationTime) => {
     setToken(token);
     setUserId(uid);
-    localStorage.setItem("userData", JSON.stringify({ userId: uid, token }));
+    setTokenExpTime(expirationTime);
+    localStorage.setItem("userData", JSON.stringify({ userId: uid, expirationTime, token  }));
   };
 
   const logout = ()=>{
     setToken(null);
     setUserId(null);
+    setTokenExpTime(null);
     localStorage.removeItem("userData");
   }
 
+
+  if(tokenExpTime !== null && new Date().getTime() > tokenExpTime){
+    logout(); // the token is expired so we should logout the user programmatically immediately
+  } else if(tokenExpTime !== null) {
+    // the token still valid so we should set a timer to log the user out programmatically in the future
+    setTimeout(()=>{
+      logout();
+    }, tokenExpTime - new Date().getTime());
+  }
+
+
   useEffect(()=>{
     const storedData = JSON.parse(localStorage.getItem("userData"));
-    if(storedData && storedData.token && storedData.userId){
-      login(storedData.userId, storedData.token);
+    if(storedData && storedData.token && storedData.userId && storedData.expirationTime){
+      login(storedData.userId, storedData.token, storedData.expirationTime);
     }
   }, []);
 

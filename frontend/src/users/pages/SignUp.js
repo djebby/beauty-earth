@@ -67,7 +67,7 @@ const SignUp = () => {
         setIsLoading(false);
         if (response.ok) {
           // if the user signup successfully we should store the userId (data.userId) & the userToken (data.userToken) in the Context  
-          logCtx.login(data.userId, data.userToken);
+          logCtx.login(data.userId, data.userToken, data.expirationTime);
           // we should redirect programmatically to the home page...
           navigate("/");
         } else {
