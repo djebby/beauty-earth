@@ -4,18 +4,22 @@ import { AuthContext } from "../../shared/context/auth-context.js";
 import PictureCard from "../components/PictureCard.js";
 import classes from "./Pictures.module.css";
 
+const PICTURE_BUCKET_SIZE = 10; // 10 picture per bucket
+
 const Pictures = () => {
   //-----------------------------------------------------------------------------------------------------------------------------hooks-part
   const logCtx = useContext(AuthContext);
   const [isLoading, setIsLoading] = useState(true);
   const [pictures, setPictures] = useState([]);
+  const [picturesCount, setPicturesCount] = useState(0);
+  const [picBucketNum, incPicBucketNum] = useState(1);
   const [error, setError] = useState(false);
   //-----------------------------------------------------------------------------------------------------------------------------fetching-data
   useEffect(() => {
     const fetchPictures = async () => {
       try {
         const response = await fetch(
-          `${process.env.REACT_APP_BACKEND_URL}pictures/`
+          `${process.env.REACT_APP_BACKEND_URL}pictures/?picBucketNum=${picBucketNum}`
         );
         if (!response.ok) {
           setIsLoading(false);
@@ -24,6 +28,7 @@ const Pictures = () => {
         const data = await response.json();
         if (response.ok && data.pictures !== null) {
           setPictures(data.pictures);
+          setPicturesCount(data.picturesCount);
           setIsLoading(false);
         }
       } catch (error) {
@@ -32,13 +37,21 @@ const Pictures = () => {
       }
     };
     fetchPictures();
-  }, []);
+  }, [picBucketNum]);
+
+  const loadMorePictures = () => {
+    incPicBucketNum((prevBucketNum) => prevBucketNum + 1);
+  };
   //-----------------------------------------------------------------------------------------------------------------------------pictureDeleteHandler
   const pictureDeleteHandler = async (id) => {
     try {
       const response = await fetch(
         `${process.env.REACT_APP_BACKEND_URL}pictures/${id}`,
-        { method: "DELETE", body:{}, headers: {Authorization: `Bearer ${logCtx.token}`} }
+        {
+          method: "DELETE",
+          body: {},
+          headers: { Authorization: `Bearer ${logCtx.token}` },
+        }
       );
       if (response.ok) {
         //if the response is ok we should filter out the deleted pic from the array
@@ -72,13 +85,22 @@ const Pictures = () => {
       No Picture Founded!
     </div>
   ) : (
-    pictures.map((picture) => (
-      <PictureCard
-        key={picture._id}
-        picture={picture}
-        pictureDeleteHandler={pictureDeleteHandler}
-      />
-    ))
+    <>
+      {pictures.map((picture) => (
+        <PictureCard
+          key={picture._id}
+          picture={picture}
+          pictureDeleteHandler={pictureDeleteHandler}
+        />
+      ))}
+      <button
+        className={"btn btn-dark " + classes.load_btn}
+        onClick={loadMorePictures}
+        disabled={picBucketNum * PICTURE_BUCKET_SIZE > picturesCount}
+      >
+        more pictures
+      </button>
+    </>
   );
 };
 

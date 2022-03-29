@@ -1,19 +1,24 @@
 const fs = require("fs");
-const { response } = require("express");
 const { validationResult } = require("express-validator");
 
 const HttpError = require("../models/http-error.js");
 const Pictures = require("../models/pictures-model.js");
 const User = require("../models/user-model.js");
 
-//-----------------------------------------------------------------------------------------------------------------------------GET => /api/places
+//-----------------------------------------------------------------------------------------------------------------------------GET => /api/places/?picBucketNum=xx
 const getPictures = async (req, res, next) => {
+  const PICTURE_BUCKET_SIZE = 10; // 10 pictures per bucket
+  let picNumber = +req.query.picBucketNum;
   let pictures = undefined;
+  let picturesCount = undefined;
   try {
-    pictures = await Pictures.find().populate({
-      path: "creator_id",
-      select: "name image_url",
-    });
+    picturesCount = await Pictures.find().count();
+    pictures = await Pictures.find()
+      .limit(picNumber * PICTURE_BUCKET_SIZE)
+      .populate({
+        path: "creator_id",
+        select: "name image_url",
+      });
   } catch (error) {
     return next(
       new HttpError(
@@ -23,7 +28,7 @@ const getPictures = async (req, res, next) => {
     );
   }
 
-  res.json({ pictures });
+  res.json({ pictures, picturesCount });
 };
 //-----------------------------------------------------------------------------------------------------------------------------GET => /api/places/:picId
 const getPicture = async (req, res, next) => {
@@ -117,8 +122,10 @@ const updatePicture = async (req, res, next) => {
     );
   }
   //check if the user is authorized to update the picture...
-  if(picture.creator_id.toString() !== req.userData.userId) {
-    return next(new HttpError("You are not authorized to edit this picture", 401));
+  if (picture.creator_id.toString() !== req.userData.userId) {
+    return next(
+      new HttpError("You are not authorized to edit this picture", 401)
+    );
   }
 
   const {
@@ -163,8 +170,10 @@ const deletePicture = async (req, res, next) => {
     );
   }
   //check if the user is authorized to delete the picture...
-  if(picture.creator_id._id.toString() !== req.userData.userId) {
-    return next(new HttpError(" You are not authorized to delete this picture ", 401));
+  if (picture.creator_id._id.toString() !== req.userData.userId) {
+    return next(
+      new HttpError(" You are not authorized to delete this picture ", 401)
+    );
   }
 
   //finally let's try to delete the picture
