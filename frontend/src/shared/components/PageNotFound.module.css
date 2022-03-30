@@ -1,0 +1,11 @@
+.not_found_page{
+    width: 75vw;
+    display: block;
+    margin: auto;
+}
+
+@media (min-width: 768px) {
+    .not_found_page{
+        width: 50vw;
+    }
+}

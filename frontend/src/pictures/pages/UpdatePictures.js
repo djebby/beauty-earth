@@ -146,6 +146,7 @@ const UpdatePictures = () => {
       <img
         className={classes.img}
         src={`${process.env.REACT_APP_ASSET_URL + picture.image_url}`}
+        alt={picture.description}
       />
       <Input
         ref={refTitle}

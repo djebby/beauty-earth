@@ -10,7 +10,8 @@ const usersRoutes = require("./routes/users-routes.js");
 const usersPictures = require("./routes/pictures-routes.js");
 
 app.use(bodyParser.json());
-app.use("/uploads/images", express.static(path.join("uploads", "images"))); //serve the image staticlly
+app.use("/uploads/images", express.static(path.join("uploads", "images"))); //serve the image statically
+app.use(express.static(path.join("public"))); // serve the frontend assets statically
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader(
@@ -22,6 +23,10 @@ app.use((req, res, next) => {
 });
 app.use("/api/users", usersRoutes);
 app.use("/api/pictures", usersPictures);
+//send the index.html (the frontend application enter point)
+app.use((req, res, next)=>{
+  res.sendFile(path.resolve(__dirname, "public", "index.html"));
+});
 
 // Error Handling Middelware
 app.use((error, req, res, next) => {
@@ -39,7 +44,7 @@ app.use((error, req, res, next) => {
 });
 
 mongoose
-  .connect(process.env.LOCAL_MONGO_URI)
+  .connect(process.env.CLOUD_MONGO_URI)
   .then(() => {
     console.log("Connection to DB Server Successfully ;)");
     app.listen(process.env.PORT || 4000);

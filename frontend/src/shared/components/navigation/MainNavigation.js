@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import classes from "./MainNavigation.module.css";
 import MainHeader from "./MainHeader.js";
 import NavLinks from "./NavLinks";
-import logo from "../../../beautiful-earth-nav-logo.svg";
+import logo from "../../../images/beautiful-earth-nav-logo.svg";
 import Backdrop from "../UIElements/Backdrop.js";
 import SideDrawer from "./SideDrawer.js";
 
@@ -27,7 +27,7 @@ const MainNavigation = (props) => {
         </SideDrawer>
         <MainHeader>
             <Link to="/">
-                <img src={logo} className={classes.logo} />
+                <img src={logo} className={classes.logo} alt="beautiy earth logo"/>
             </Link>
             <button className={`btn ${classes.nav_btn}`} onClick={openDrawerHandler}>
                 <i className="bi bi-list" style={{fontSize: "2.5rem", color:"white"}}></i>

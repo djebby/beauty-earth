@@ -15,6 +15,7 @@ const PictureCard = ({ picture, pictureDeleteHandler }) => {
       <img
         className={classes.img}
         src={`${process.env.REACT_APP_ASSET_URL + picture.image_url}`}
+        alt={picture.description}
       />
       <div className={classes.row}>
         <h3>{picture.title}</h3>
@@ -26,6 +27,7 @@ const PictureCard = ({ picture, pictureDeleteHandler }) => {
               src={
                 process.env.REACT_APP_ASSET_URL + picture.creator_id.image_url
               }
+              alt={picture.creator_id.name}
             />
             {picture.creator_id.name}
           </Link>

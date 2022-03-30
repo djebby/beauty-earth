@@ -9,6 +9,7 @@ const UserAvatar = ({ name, email, image_url }) => {
       <img
         className={classes.avatar__img}
         src={process.env.REACT_APP_ASSET_URL + image_url}
+        alt={name}
       />
       <h4>{name}</h4>
       <h6>{email}</h6>
