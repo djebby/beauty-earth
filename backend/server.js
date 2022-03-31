@@ -23,7 +23,11 @@ app.use((req, res, next) => {
 });
 app.use("/api/users", usersRoutes);
 app.use("/api/pictures", usersPictures);
-//send the index.html (the frontend application enter point)
+/*
+always for any unknown request we will send back our index.html file
+(the REACT frontend application enter point) so the react-router can
+resorve the unknown url
+*/
 app.use((req, res, next)=>{
   res.sendFile(path.resolve(__dirname, "public", "index.html"));
 });
