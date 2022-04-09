@@ -5,7 +5,7 @@ const HttpError = require("../models/http-error.js");
 const Pictures = require("../models/pictures-model.js");
 const User = require("../models/user-model.js");
 
-//-----------------------------------------------------------------------------------------------------------------------------GET => /api/places/?picBucketNum=xx
+//-----------------------------------------------------------------------------------------------------------------------------GET => /api/pictures/?picBucketNum=xx
 const getPictures = async (req, res, next) => {
   const PICTURE_BUCKET_SIZE = 10; // 10 pictures per bucket
   let picNumber = +req.query.picBucketNum;
@@ -30,7 +30,7 @@ const getPictures = async (req, res, next) => {
 
   res.json({ pictures, picturesCount });
 };
-//-----------------------------------------------------------------------------------------------------------------------------GET => /api/places/:picId
+//-----------------------------------------------------------------------------------------------------------------------------GET => /api/pictures/:picId
 const getPicture = async (req, res, next) => {
   const pictureId = req.params.picId;
   let picture = undefined;
@@ -57,7 +57,7 @@ const getPicture = async (req, res, next) => {
   res.status(200).json({ picture });
 };
 
-//-----------------------------------------------------------------------------------------------------------------------------POST => /api/places
+//-----------------------------------------------------------------------------------------------------------------------------POST => /api/pictures
 const createPicture = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -94,7 +94,7 @@ const createPicture = async (req, res, next) => {
   }
   res.status(201).json({ newPic });
 };
-//-----------------------------------------------------------------------------------------------------------------------------PATCH => /api/places/:picId
+//-----------------------------------------------------------------------------------------------------------------------------PATCH => /api/pictures/:picId
 const updatePicture = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -146,7 +146,7 @@ const updatePicture = async (req, res, next) => {
     );
   }
 };
-//-----------------------------------------------------------------------------------------------------------------------------DELETE => /api/places/:picId
+//-----------------------------------------------------------------------------------------------------------------------------DELETE => /api/pictures/:picId
 const deletePicture = async (req, res, next) => {
   const pictureId = req.params.picId;
   //first let's try to find the picture

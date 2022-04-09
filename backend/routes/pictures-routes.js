@@ -6,13 +6,13 @@ const picturesControllers = require("../controllers/pictures-controllers.js");
 const fileUpload = require("../middleware/file-upload.js");
 const checkAuth = require("../middleware/check-auth.js");
 
-//------------------------------------------------------------------------------GET => /api/places
+//------------------------------------------------------------------------------GET => /api/pictures/?picBucketNum=xx
 router.get("/", picturesControllers.getPictures);
-//------------------------------------------------------------------------------GET => /api/places/:picId
+//------------------------------------------------------------------------------GET => /api/pictures/:picId
 router.get("/:picId", picturesControllers.getPicture);
 //------------------------------------------------------------------------------authentication-check 
 router.use(checkAuth);
-//------------------------------------------------------------------------------POST => /api/places
+//------------------------------------------------------------------------------POST => /api/pictures
 router.post(
   "/",
   fileUpload.single("image"),
@@ -22,7 +22,7 @@ router.post(
   ],
   picturesControllers.createPicture
 );
-//------------------------------------------------------------------------------PATCH => /api/places/:picId
+//------------------------------------------------------------------------------PATCH => /api/pictures/:picId
 router.patch(
   "/:picId",
   [
@@ -32,7 +32,7 @@ router.patch(
   picturesControllers.updatePicture
 );
 
-//------------------------------------------------------------------------------DELETE => /api/places/:picId
+//------------------------------------------------------------------------------DELETE => /api/pictures/:picId
 router.delete("/:picId", picturesControllers.deletePicture);
 
 module.exports = router;

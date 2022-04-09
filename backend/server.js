@@ -48,7 +48,7 @@ app.use((error, req, res, next) => {
 });
 
 mongoose
-  .connect(process.env.CLOUD_MONGO_URI)
+  .connect(process.env.LOCAL_MONGO_URI)
   .then(() => {
     console.log("Connection to DB Server Successfully ;)");
     app.listen(process.env.PORT || 4000);
