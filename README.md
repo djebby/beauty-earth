@@ -12,12 +12,79 @@
 
 - ## API Endpoints .../api
     - users route .../api/users
-        - GET .../api/users/:userId => retrive the user info and an array of picture objects for specific user id {userPictures: { _id, name, email, image_url, pictures_ids: [ {_id, title, description, image_url, address}, {...}, {...}, {...} ] }}
-        - POST .../api/users/signup => create and login a new user and the body of the request should be like this  { name, email, password: string with 6 char minimum, image: png, jpeg, jpg file }
-        - POST .../api/users/login => log user in and the body of the request sould look like this { email, password }
+        - GET .../api/users/:userId => retrive the user info and an array of picture objects for specific user id 
+        ```json
+            { 
+                userPictures: 
+                { 
+                    _id, 
+                    name, 
+                    email, 
+                    image_url, 
+                    pictures_ids: [
+                            {
+                                _id, 
+                                title, 
+                                description, 
+                                image_url, 
+                                address
+                            }, 
+                            {...}, 
+                            {...}, 
+                            {...}
+                    ] 
+                } 
+            }
+        ```
+        - POST .../api/users/signup => create and login a new user and the body of the request should be like this
+        ```json
+            { 
+                name, 
+                email, 
+                password: string with 6 char minimum, 
+                image: png, jpeg, jpg file 
+            }
+        ```
+        - POST .../api/users/login => log user in and the body of the request sould look like this 
+        ```json 
+            { 
+                email, 
+                password 
+            }
+        ```
     - pictures route .../api/pictures
-        - GET .../api/pictures/?picBucketNum=number => retrive object with array of (number * 10) pictures & the total number of pictures { pictures: [ { _id, title, description, image_url, address, creator_id: {_id, name, image_url} }, {...}, {...}, {...} ], picturesCount: totalNumberOfPictures }
-        - GET .../api/pictures/:picId => retrive a specific picture with id { picture: {_id, title, description, image_url, address, creatro_id} }
+        - GET .../api/pictures/?picBucketNum=number => retrive object with array of (number * 10) pictures & the total number of pictures 
+        ```json
+            { 
+                pictures: [ 
+                    { 
+                        _id, 
+                        title, 
+                        description, 
+                        image_url, 
+                        address, 
+                        creator_id: {_id, name, image_url}
+                    }, 
+                    {...}, 
+                    {...}, 
+                    {...} 
+                ], 
+                picturesCount: totalNumberOfPictures
+            }
+        ```
+        - GET .../api/pictures/:picId => retrive a specific picture with id 
+        ```json
+            {
+                picture: {
+                    _id, 
+                    title, 
+                    description, 
+                    image_url, 
+                    address, 
+                    creatro_id
+                }
+            }
+        ```
         - POST .../api/pictures/ => post a picture (need authentification)
         - PATCH .../api/pictures/:picId => edit a picture (need authentification and authorization)
         - DELETE .../api/pictures/:picId => delete a picture (need authentification and authorization)
@@ -28,3 +95,26 @@
     - .../pictures/update/:picId => edit a specefic picture
     - .../login => login form
     - .../signup => signup form
+- ## DATABASE Models
+    - model of users collection
+        ```javascript
+        {
+            name: { type: String, required: true, minlength: 6},
+            email: { type: String, required: true, unique: true },
+            password: { type: String, required: true },
+            image_url: { type: String, required: true },
+            pictures_ids: [
+                { type: mongoose.Types.ObjectId, required: true, ref: "Picture" },
+            ],
+        }
+        ```
+    - model of pictures collection
+        ```javascript
+        {
+            title: { type: String, required: true, minlength: 3 },
+            description: { type: String, required: true, minlength: 10 },
+            image_url:{ type: String, required: true},
+            address: { type: String, required: true },
+            creator_id: { type: mongoose.Types.ObjectId, required: true, ref: "User"}
+        }
+        ```
