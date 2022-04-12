@@ -13,81 +13,126 @@
 - ## API Endpoints .../api
     - users route .../api/users
         - GET .../api/users/:userId => retrive the user info and an array of picture objects for specific user id 
-        ```json
+            ```json
             { 
-                userPictures: 
+                "userPictures":
                 { 
-                    _id, 
-                    name, 
-                    email, 
-                    image_url, 
-                    pictures_ids: [
+                    "_id": "string", 
+                    "name": "string", 
+                    "email": "string", 
+                    "image_url": "string", 
+                    "pictures_ids": [
                             {
-                                _id, 
-                                title, 
-                                description, 
-                                image_url, 
-                                address
+                                "_id": "string",
+                                "title": "string",
+                                "description": "string",
+                                "image_url": "string",
+                                "address": "string"
                             }, 
                             {...}, 
-                            {...}, 
+                            {...},
                             {...}
                     ] 
                 } 
             }
-        ```
+            ```
         - POST .../api/users/signup => create and login a new user and the body of the request should be like this
-        ```json
-            { 
-                name, 
-                email, 
-                password: string with 6 char minimum, 
-                image: png, jpeg, jpg file 
-            }
-        ```
+            ```javascript
+            const formData = new FormData();
+            formData.append("name", "string");
+            formData.append("email", "string");
+            formData.append("password", "string");
+            formData.append("image", "jpg, png or jpeg file");
+            const response = await fetch(
+                `${process.env.REACT_APP_BACKEND_URL}users/signup`,
+                {
+                    method: "POST",
+                    body: formData,
+                    headers: {},
+                }
+            );
+            ```
         - POST .../api/users/login => log user in and the body of the request sould look like this 
-        ```json 
+            ```json 
             { 
-                email, 
-                password 
+                "email": "string", 
+                "password": "string"
             }
-        ```
+            ```
     - pictures route .../api/pictures
         - GET .../api/pictures/?picBucketNum=number => retrive object with array of (number * 10) pictures & the total number of pictures 
-        ```json
+            ```json
             { 
-                pictures: [ 
+                "pictures": [ 
                     { 
-                        _id, 
-                        title, 
-                        description, 
-                        image_url, 
-                        address, 
-                        creator_id: {_id, name, image_url}
+                        "_id": "string", 
+                        "title": "string", 
+                        "description": "string", 
+                        "image_url": "string",
+                        "address": "string",
+                        "creator_id": { "_id": "string", "name": "string", "image_url": "string" }
                     }, 
                     {...}, 
                     {...}, 
                     {...} 
                 ], 
-                picturesCount: totalNumberOfPictures
+                "picturesCount": "number"
             }
-        ```
+            ```
         - GET .../api/pictures/:picId => retrive a specific picture with id 
-        ```json
+            ```json
             {
-                picture: {
-                    _id, 
-                    title, 
-                    description, 
-                    image_url, 
-                    address, 
-                    creatro_id
+                "picture": {
+                    "_id": "string", 
+                    "title": "string", 
+                    "description": "string", 
+                    "image_url": "string", 
+                    "address": "string", 
+                    "creator_id": "string"
                 }
             }
-        ```
-        - POST .../api/pictures/ => post a picture (need authentification)
-        - PATCH .../api/pictures/:picId => edit a picture (need authentification and authorization)
-        - DELETE .../api/pictures/:picId => delete a picture (need authentification and authorization)
+            ```
+        - POST .../api/pictures/ => post a picture (need authentication)
+            ```javascript
+            const formData = new FormData();
+            formData.append("title", "string");
+            formData.append("description", "string");
+            formData.append("address", "string");
+            formData.append("image", "jpg, png or jpeg file");
+            await fetch(
+                `${process.env.REACT_APP_BACKEND_URL}pictures/`,
+                {
+                    method: "POST",
+                    body: formData,
+                    headers: {
+                        Authorization: "Bearer token"
+                    },
+                }
+            );
+            ```
+        - PATCH .../api/pictures/:picId => edit a picture (need authentication and authorization)
+            ```javascript
+            {
+                method: "PATCH",
+                body: JSON.stringify({
+                    title: "string",
+                    description: "string",
+                    address: "string"
+                }),
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer token`
+                }
+            }
+            ```
+        - DELETE .../api/pictures/:picId => delete a picture (need authentication and authorization)
+            ```javascript
+            {
+                method: "DELETE",
+                body: {},
+                headers: { Authorization: "Bearer token" }
+            }
+            ```
 - ## SPA Routes
     - .../ => list of latest uploaded pictures
     - .../:userId/pictures => list of pictures of a specefic user
@@ -117,4 +162,17 @@
             address: { type: String, required: true },
             creator_id: { type: mongoose.Types.ObjectId, required: true, ref: "User"}
         }
+        ```
+- ## DOTENV FILES
+    - backend/.env
+        ```
+        PORT = 4000
+        CLOUD_MONGO_URI = your connection string goes here...
+        LOCAL_MONGO_URI = mongodb://localhost:27017/your_database_name
+        JWT_KEY = jwt secret key goes here...
+        ```
+    - frontend/.env
+        ```
+        REACT_APP_BACKEND_URL=http://localhost:4000/api/
+        REACT_APP_ASSET_URL=http://localhost:4000/
         ```
