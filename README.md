@@ -10,7 +10,7 @@
 
 # Technical description :
 
-- ## API Endpoints .../api
+- ## API Reference .../api
     - users route .../api/users
         - GET .../api/users/:userId => retrive the user info and an array of picture objects for specific user id 
             ```json
@@ -140,7 +140,7 @@
     - .../pictures/update/:picId => edit a specefic picture
     - .../login => login form
     - .../signup => signup form
-- ## DATABASE Models
+- ## Database Models
     - model of users collection
         ```javascript
         {
@@ -163,16 +163,29 @@
             creator_id: { type: mongoose.Types.ObjectId, required: true, ref: "User"}
         }
         ```
-- ## DOTENV FILES
-    - backend/.env
+- ## .env Files
+    - ### backend/.env
         ```
         PORT = 4000
         CLOUD_MONGO_URI = your connection string goes here...
-        LOCAL_MONGO_URI = mongodb://localhost:27017/your_database_name
         JWT_KEY = jwt secret key goes here...
         ```
-    - frontend/.env
+    - ### frontend/.env
         ```
         REACT_APP_BACKEND_URL=http://localhost:4000/api/
         REACT_APP_ASSET_URL=http://localhost:4000/
+        ```
+- ## Setup
+    create your .env files then :
+    - ### Run up the api backend.
+        ```sh
+        $ cd backend
+        $ npm install
+        $ npm start
+        ```
+    - ### Deploy the react app dev server.
+        ```sh
+        $ cd frontend
+        $ npm install
+        $ npm start
         ```
