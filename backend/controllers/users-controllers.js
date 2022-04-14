@@ -2,6 +2,7 @@ const bcrypt = require("bcryptjs"); // npm i bcryptjs
 const jwt = require("jsonwebtoken"); // npm i jsonwebtoken
 const { validationResult } = require("express-validator"); // npm i express-validator
 
+const cloudinary = require("../middleware/cloudinary");
 const HttpError = require("../models/http-error.js");
 const User = require("../models/user-model.js");
 
@@ -70,11 +71,14 @@ const signup = async (req, res, next) => {
   }
   let newUser = undefined;
   try {
+    // upload the image to cloudinary server
+    const imageUploadResponse = await cloudinary.uploader.upload(req.file.path);
     newUser = new User({
       name,
       email,
       password: cryptedPassword,
-      image_url: req.file.path,
+      image_url: imageUploadResponse.secure_url,
+      cloudinary_id: imageUploadResponse.public_id,
       pictures_ids: [],
     });
     await newUser.save();
