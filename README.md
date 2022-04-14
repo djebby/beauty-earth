@@ -9,9 +9,9 @@
 ## you can navigate to the app with this link :arrow_right: [beautiy-earth](https://beautiy-earth.herokuapp.com/) :globe_with_meridians:
 
 # Technical description :
-
+## :warning: cloudinary branch is the deployed version in heroku. main branch is just for local test.
 - ## API Reference .../api
-    - users route .../api/users
+    - ### users route .../api/users
         - GET .../api/users/:userId => retrive the user info and an array of picture objects for specific user id 
             ```json
             { 
@@ -59,7 +59,7 @@
                 "password": "string"
             }
             ```
-    - pictures route .../api/pictures
+    - ### pictures route .../api/pictures
         - GET .../api/pictures/?picBucketNum=number => retrive object with array of (number * 10) pictures & the total number of pictures 
             ```json
             { 
@@ -134,14 +134,14 @@
             }
             ```
 - ## SPA Routes
-    - .../ => list of latest uploaded pictures
-    - .../:userId/pictures => list of pictures of a specefic user
-    - .../pictures/new => upload a new pictures
-    - .../pictures/update/:picId => edit a specefic picture
-    - .../login => login form
-    - .../signup => signup form
+    - ### .../ => list of latest uploaded pictures
+    - ### .../:userId/pictures => list of pictures of a specefic user
+    - ### .../pictures/new => upload a new pictures
+    - ### .../pictures/update/:picId => edit a specefic picture
+    - ### .../login => login form
+    - ### .../signup => signup form
 - ## Database Models
-    - model of users collection
+    - ### model of users collection
         ```javascript
         {
             name: { type: String, required: true, minlength: 6},
@@ -153,7 +153,7 @@
             ],
         }
         ```
-    - model of pictures collection
+    - ### model of pictures collection
         ```javascript
         {
             title: { type: String, required: true, minlength: 3 },
@@ -167,7 +167,7 @@
     - ### backend/.env
         ```
         PORT = 4000
-        CLOUD_MONGO_URI = your connection string goes here...
+        LOCAL_MONGO_URI = mongodb://localhost:27017/BeautiyEarthDB
         JWT_KEY = jwt secret key goes here...
         ```
     - ### frontend/.env
