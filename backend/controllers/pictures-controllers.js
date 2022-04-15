@@ -1,9 +1,9 @@
-const fs = require("fs");
 const { validationResult } = require("express-validator");
 
-const HttpError = require("../models/http-error.js");
-const Pictures = require("../models/pictures-model.js");
-const User = require("../models/user-model.js");
+const cloudinary = require("../middleware/cloudinary");
+const HttpError = require("../models/http-error");
+const Pictures = require("../models/pictures-model");
+const User = require("../models/user-model");
 
 //-----------------------------------------------------------------------------------------------------------------------------GET => /api/pictures/?picBucketNum=xx
 const getPictures = async (req, res, next) => {
@@ -74,10 +74,13 @@ const createPicture = async (req, res, next) => {
     if (!user) {
       return next(new HttpError("sorry there is no user with this id ", 404));
     }
+    // upload the image to cloudinary server
+    const imageUploadResponse = await cloudinary.uploader.upload(req.file.path);
     newPic = new Pictures({
       title,
       description,
-      image_url: req.file.path,
+      image_url: imageUploadResponse.secure_url,
+      cloudinary_id: imageUploadResponse.public_id,
       address,
       creator_id: req.userData.userId,
     });
@@ -182,16 +185,8 @@ const deletePicture = async (req, res, next) => {
     picture.creator_id.pictures_ids.pull(picture);
     await picture.creator_id.save();
     await picture.remove();
-    //delete the file of the image
-    fs.unlink(picture.image_url, (error) => {
-      if (error) {
-        console.log(
-          error,
-          " error in the deletion of the picture => ",
-          picture.image_url
-        );
-      }
-    });
+    //delete the image in cloudinary
+    await cloudinary.uploader.destroy(picture.cloudinary_id);
     res
       .status(200)
       .json({ message: `picture ${picture.title} deleted successfully` });

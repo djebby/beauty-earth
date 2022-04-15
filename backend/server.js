@@ -3,7 +3,6 @@ const app = express();
 require("dotenv").config();
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
-const fs = require("fs");
 const path = require("path");
 
 const usersRoutes = require("./routes/users-routes.js");
@@ -34,11 +33,6 @@ app.use((req, res, next)=>{
 
 // Error Handling Middelware
 app.use((error, req, res, next) => {
-  if (req.file) {
-    fs.unlink(req.file.path, (error)=>{
-      console.log(error);
-    })
-  }
   if (res.headerSent) {
     return next(error);
   }
