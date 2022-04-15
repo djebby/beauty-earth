@@ -14,7 +14,7 @@ const PictureCard = ({ picture, pictureDeleteHandler }) => {
     <Wrapper>
       <img
         className={classes.img}
-        src={`${process.env.REACT_APP_ASSET_URL + picture.image_url}`}
+        src={picture.image_url}
         alt={picture.description}
       />
       <div className={classes.row}>
@@ -24,9 +24,7 @@ const PictureCard = ({ picture, pictureDeleteHandler }) => {
           <Link to={`/${picture.creator_id._id}/pictures`}>
             <img
               className={classes.img_avatar}
-              src={
-                process.env.REACT_APP_ASSET_URL + picture.creator_id.image_url
-              }
+              src={picture.creator_id.image_url}
               alt={picture.creator_id.name}
             />
             {picture.creator_id.name}
