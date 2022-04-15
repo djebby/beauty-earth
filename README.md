@@ -9,10 +9,10 @@
 ## you can navigate to the app with this link :arrow_right: [beautiy-earth](https://beautiy-earth.herokuapp.com/) :globe_with_meridians:
 
 # Technical description :
-## :warning: cloudinary branch is the deployed version in heroku. main branch is just for local test.
-- ## API Reference .../api
-    - ### users route .../api/users
-        - GET .../api/users/:userId => retrive the user info and an array of picture objects for specific user id 
+### :warning: cloudinary branch is the deployed version in heroku. main branch is just for local test.
+- ## API Reference /api
+    - ### users route /api/users
+        - GET /api/users/:userId => retrive the user info and an array of picture objects for specific user id 
             ```json
             { 
                 "userPictures":
@@ -36,7 +36,7 @@
                 } 
             }
             ```
-        - POST .../api/users/signup => create and login a new user and the body of the request should be like this
+        - POST /api/users/signup => create and login a new user and the body of the request should be like this
             ```javascript
             const formData = new FormData();
             formData.append("name", "string");
@@ -52,15 +52,15 @@
                 }
             );
             ```
-        - POST .../api/users/login => log user in and the body of the request sould look like this 
+        - POST /api/users/login => log user in and the body of the request sould look like this 
             ```json 
             { 
                 "email": "string", 
                 "password": "string"
             }
             ```
-    - ### pictures route .../api/pictures
-        - GET .../api/pictures/?picBucketNum=number => retrive object with array of (number * 10) pictures & the total number of pictures 
+    - ### pictures route /api/pictures
+        - GET /api/pictures/?picBucketNum=number => retrive object with array of (number * 10) pictures & the total number of pictures 
             ```json
             { 
                 "pictures": [ 
@@ -79,7 +79,7 @@
                 "picturesCount": "number"
             }
             ```
-        - GET .../api/pictures/:picId => retrive a specific picture with id 
+        - GET /api/pictures/:picId => retrive a specific picture with id 
             ```json
             {
                 "picture": {
@@ -92,7 +92,7 @@
                 }
             }
             ```
-        - POST .../api/pictures/ => post a picture (need authentication)
+        - POST /api/pictures/ => post a picture (need authentication)
             ```javascript
             const formData = new FormData();
             formData.append("title", "string");
@@ -110,7 +110,7 @@
                 }
             );
             ```
-        - PATCH .../api/pictures/:picId => edit a picture (need authentication and authorization)
+        - PATCH /api/pictures/:picId => edit a picture (need authentication and authorization)
             ```javascript
             {
                 method: "PATCH",
@@ -125,7 +125,7 @@
                 }
             }
             ```
-        - DELETE .../api/pictures/:picId => delete a picture (need authentication and authorization)
+        - DELETE /api/pictures/:picId => delete a picture (need authentication and authorization)
             ```javascript
             {
                 method: "DELETE",
@@ -134,12 +134,14 @@
             }
             ```
 - ## SPA Routes
-    - ### .../ => list of latest uploaded pictures
-    - ### .../:userId/pictures => list of pictures of a specefic user
-    - ### .../pictures/new => upload a new pictures
-    - ### .../pictures/update/:picId => edit a specefic picture
-    - ### .../login => login form
-    - ### .../signup => signup form
+    | ROUTE                    | DESCRIPTION                         |
+    |--------------------------|-------------------------------------|
+    | /                        | list of latest uploaded pictures    |
+    | /:userId/pictures        | list of pictures of a specefic user |
+    | /pictures/new            | upload a new pictures               |
+    | /pictures/update/:picId  | edit a specefic picture             |
+    | /login                   | login form                          |
+    | /signup                  | signup form                         |
 - ## Database Models
     - ### model of users collection
         ```javascript
@@ -177,7 +179,7 @@
         ```
 - ## Setup
     create your .env files then :
-    - ### Run up the api backend.
+    - ### Spin up the api backend.
         ```sh
         $ cd backend
         $ npm install
